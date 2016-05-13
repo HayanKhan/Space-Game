@@ -1,3 +1,0 @@
-# Space-Game
-
-Space Game
