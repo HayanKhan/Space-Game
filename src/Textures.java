@@ -2,45 +2,71 @@ import java.awt.image.BufferedImage;
 
 public class Textures {
 	//Class image properties
-	private SpriteSheet ss;
-	public BufferedImage[] player = new BufferedImage[3];
-	public BufferedImage[] missle = new BufferedImage[3];
-	public BufferedImage[] enemy = new BufferedImage[3]; //NOTICE PUBLIC,BAD CODING STYLE, CAN MAKE IT STATIC AND CHANGE THE PROGRAM OR USE GETTERS/SETTERS
-	public BufferedImage powerUp;
-	public BufferedImage healthUp;
+	private static SpriteSheet ss;
+	private static BufferedImage[] playerImageArray = new BufferedImage[3];
+	private static BufferedImage[] bulletImageArray = new BufferedImage[3];
+	private static BufferedImage[] enemyImageArray = new BufferedImage[3]; //NOTICE PUBLIC,BAD CODING STYLE, CAN MAKE IT STATIC AND CHANGE THE PROGRAM OR USE GETTERS/SETTERS
+	private static BufferedImage powerUpImage;
+	private static BufferedImage healthUpImage;
 	public static BufferedImage volumeButtonOn;
 	public static BufferedImage volumeButtonOff;
 	public static int SPRITE_WIDTH = 32;
 	public static int SPRITE_HEIGHT = 32;
 	
+
+	/** Loads in the images for the player, enemies and bullets */
+	public static void init(){
+		ss = new SpriteSheet(Game.getSpriteSheet());
+		playerImageArray[0] = ss.grabImage(1, 1, SPRITE_WIDTH, SPRITE_HEIGHT);
+		playerImageArray[1] = ss.grabImage(1, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
+		playerImageArray[2] = ss.grabImage(1, 3, SPRITE_WIDTH, SPRITE_HEIGHT);
+		
+		bulletImageArray[0] = ss.grabImage(2, 1, SPRITE_WIDTH, SPRITE_HEIGHT);
+		bulletImageArray[1] = ss.grabImage(2, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
+		bulletImageArray[2] = ss.grabImage(2, 3, SPRITE_WIDTH, SPRITE_HEIGHT);
+		
+		enemyImageArray[0] = ss.grabImage(3, 1, SPRITE_WIDTH, SPRITE_HEIGHT);
+		enemyImageArray[1] = ss.grabImage(3, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
+		enemyImageArray[2] = ss.grabImage(3, 3, SPRITE_WIDTH, SPRITE_HEIGHT);
+		
+		powerUpImage = ss.grabImage(4, 1, SPRITE_WIDTH, SPRITE_HEIGHT);
+		healthUpImage = ss.grabImage(4, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
+		
+		volumeButtonOn = ss.grabImage(5, 1,SPRITE_WIDTH, SPRITE_HEIGHT);
+		volumeButtonOff = ss.grabImage(5, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
+		
+	}
 	/**
-	 * Constructor that initializes the spritesheet and gets the textures
-	 * @param game Reference of the main game class.
+	 * Returns a specific player image from the player image array
+	 * @param i The player image you would like to return
+	 * @return Returns the player image
 	 */
-	public Textures(Game game){
-		ss = new SpriteSheet(game.getSpriteSheet());
-		getTextures();	
+	public static BufferedImage getPlayerImage(int i){
+		return playerImageArray[i];
+	}
+	/**
+	 * Returns a specific bullet image from the bullet image array.
+	 * @param i The bullet image you would like to return
+	 * @return Returns the bullet image
+	 */
+	public static BufferedImage getMissleImage(int i){
+		return bulletImageArray[i];
+	}
+	/**
+	 * Returns a specific enemy image from the bullet image array.
+	 * @param i The enemy image you would like to return
+	 * @return Returns the enemy image
+	 */
+	public static BufferedImage getEnemyImage(int i){
+		return enemyImageArray[i];
+	}
+	/** @return The power up image*/
+	public static BufferedImage getPowerUpImage(){
+		return powerUpImage;
+	}
+	/** @return The health up image*/
+	public static BufferedImage getHealthUpImage(){
+		return healthUpImage;
 	}
 	
-	/** Loads in the images for the player, enemies and bullets */
-	private void getTextures(){
-		player[0] = ss.grabImage(1, 1, 32, 32);
-		player[1] = ss.grabImage(1, 2, 32, 32);
-		player[2] = ss.grabImage(1, 3, 32, 32);
-		
-		missle[0] = ss.grabImage(2, 1, 32, 32);
-		missle[1] = ss.grabImage(2, 2, 32, 32);
-		missle[2] = ss.grabImage(2, 3, 32, 32);
-		
-		enemy[0] = ss.grabImage(3, 1, 32, 32);
-		enemy[1] = ss.grabImage(3, 2, 32, 32);
-		enemy[2] = ss.grabImage(3, 3, 32, 32);
-		
-		powerUp = ss.grabImage(4, 1, 32, 32);
-		healthUp = ss.grabImage(4, 2, 32, 32);
-		
-		volumeButtonOn = ss.grabImage(5, 1, 32, 32);
-		volumeButtonOff = ss.grabImage(5, 2, 32, 32);
-		
-	}
 }

@@ -8,37 +8,23 @@ import com.game.source.src.main.classes.EntityC;
 
 public class Controller {
 	//Linked lists made to group different type of entities in seperate linked lists.
-	private LinkedList<EntityA> ea = new LinkedList<EntityA>();
-	private LinkedList<EntityB> eb = new LinkedList<EntityB>();
-	private LinkedList<EntityC> ec = new LinkedList<EntityC>();
-	
-	EntityA enta;
-	EntityB entb;
-	EntityC entc;
-	//Required Classes
-	private Game game;
-	private Textures tex;
+	private static LinkedList<EntityA> ea = new LinkedList<EntityA>();
+	private static LinkedList<EntityB> eb = new LinkedList<EntityB>();
+	private static LinkedList<EntityC> ec = new LinkedList<EntityC>();
+	private EntityA enta;
+	private EntityB entb;
+	private EntityC entc;
+	//Required classes/variables
 	Random r = new Random();
-	
-	private int type;
-	
-	/**
-	 * This constructor is used to get the necessary imports to be able to use different class properties.
-	 * @param tex Imports the textures, so images can be used
-	 * @param game Imports the game class.
-	 */
-	public Controller(Textures tex, Game game){
-		this.tex = tex;	
-		this.game = game;
-	}
-	
+	private static int type;
+
 	/**
 	 * Enemies alive are stored in the EntityB linked list
 	 * @param enemy_count The number of enemies alive in the current wave
 	 */
 	public void createEnemy(int enemy_count){
 		for (int i =0 ; i <enemy_count ; i++){
-			addEntity(new Enemy(r.nextInt(Game.HEIGHT * Game.SCALE) - Textures.SPRITE_HEIGHT, -10 , tex,game,this));
+			addEntity(new Enemy(r.nextInt(Game.HEIGHT * Game.SCALE) - Textures.SPRITE_HEIGHT, -10));
 		}
 	}
 	
@@ -47,7 +33,7 @@ public class Controller {
 	 * @param x X position of where upgrade is created
 	 * @param y Y position of where upgrade is created
 	 */
-	public void createUpgrade(double x, double y){
+	public static void createUpgrade(double x, double y){
 		Random rgen = new Random();
 		if (rgen.nextInt(4) == 0){
 			if (rgen.nextInt(2) == 0){
@@ -55,7 +41,7 @@ public class Controller {
 			}else{
 				type = 2;
 			}
-			addEntity(new Upgrades(type, x, y, tex, this));
+			addEntity(new Upgrades(type, x, y));
 		}
 	}
 	/** Updates for all the different entities in the game */
@@ -95,39 +81,39 @@ public class Controller {
 		}
 	}
 	/** Adds an object of class EntityA to an EntityA linked list */
-	public void addEntity(EntityA block){
+	public static void addEntity(EntityA block){
 		ea.add(block);
 	}
 	/** Removes an object of class EntityA from an EntityA linked list */
-	public void removeEntity(EntityA block){
+	public static void removeEntity(EntityA block){
 		ea.remove(block);
 	}
 	/** Adds an object of class EntityB to an EntityB linked list */
-	public void addEntity(EntityB block){
+	public static void addEntity(EntityB block){
 		eb.add(block);
 	}
 	/** Removes an object of class EntityB from an EntityB linked list */
-	public void removeEntity(EntityB block){
+	public static void removeEntity(EntityB block){
 		eb.remove(block);
 	}
 	/** Adds an object of class EntityC to an EntityC linked list */
-	public void addEntity(EntityC block){
+	public static void addEntity(EntityC block){
 		ec.add(block);
 	}
 	/** Removes an object of class EntityC from an EntityC linked list */
-	public void removeEntity(EntityC block){
+	public static void removeEntity(EntityC block){
 		ec.remove(block);
 	}
 	/** Returns an EntityA linked list */
-	public LinkedList<EntityA> getEntityA(){
+	public static LinkedList<EntityA> getEntityA(){
 		return ea;
 	}
 	/** Returns an EntityB linked list */
-	public LinkedList<EntityB> getEntityB(){
+	public static LinkedList<EntityB> getEntityB(){
 		return eb;
 	}
 	/** Returns an EntityC linked list */
-	public LinkedList<EntityC> getEntityC(){
+	public static LinkedList<EntityC> getEntityC(){
 		return ec;
 	}
 }

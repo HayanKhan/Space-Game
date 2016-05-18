@@ -10,8 +10,7 @@ public class Enemy extends GameObject implements EntityB {
 	//Class features
 	Random r = new Random();
 	Animation anim;
-	private Game game;
-	private Controller c;
+	
 	
 	//Enemy plane speed
 	private double speed = r.nextDouble() * 3 + 1; 
@@ -25,12 +24,10 @@ public class Enemy extends GameObject implements EntityB {
 	 * @param game Used for access to enemy plane linked list
 	 * @param c Controller to remove bullets, enemies and create upgrades
 	 */
-	public Enemy(double x, double y, Textures tex, Game game, Controller c){
+	public Enemy(double x, double y){
 		super(x,y);
-		this.game = game;
-		this.c = c;
 		
-		anim = new Animation(5,tex.enemy[0],tex.enemy[1],tex.enemy[2]);
+		anim = new Animation(5, Textures.getEnemyImage(0),Textures.getEnemyImage(1),Textures.getEnemyImage(2));
 	}
 	/** Updates the enemy plane */
 	public void tick(){
@@ -40,15 +37,15 @@ public class Enemy extends GameObject implements EntityB {
 			this.setX(r.nextInt((Game.WIDTH* Game.SCALE))); //make a variablee somewhere to replace the 32 constant
 			speed = r.nextDouble() * 3 + 1; 
 		}
-		for (int i = 0 ; i < game.ea.size(); i++){
-			EntityA tempEnt = game.ea.get(i);
+		for (int i = 0 ; i < Game.ea.size(); i++){
+			EntityA tempEnt = Game.ea.get(i);
 			
 			if (Physics.Collision(this, tempEnt)){
-				c.removeEntity(tempEnt);
-				c.removeEntity(this);
+				Controller.removeEntity(tempEnt);
+				Controller.removeEntity(this);
 				setEnemyKilled(getEnemyKilled() + 1);
-				game.getScoreSystem().setScore(game.getScoreSystem().getScore() + 10);
-				c.createUpgrade(x, y);
+				Game.getScoreSystem().setScore(Game.getScoreSystem().getScore() + 10);
+				Controller.createUpgrade(x, y);
 			}
 		}
 		anim.runAnimation();
