@@ -29,11 +29,12 @@ public class Game extends Canvas implements Runnable {
 	private boolean running = false;
 	private Thread thread;	
 	//Ally, enemy, and neutral entities
-	public static LinkedList<EntityA> ea;
-	public static LinkedList<EntityB> eb;
-	public static LinkedList<EntityC> ec;
+	public LinkedList<EntityA> ea;
+	public LinkedList<EntityB> eb;
+	public LinkedList<EntityC> ec;
 	//Enemy statistics
 	private int enemy_count = 5;
+	//private int enemy_killed = 0;---------------------------------------------------------------------------------------------------
 	//Game states
 	private Menu menu;
 	private GameOver gameOver;
@@ -41,19 +42,19 @@ public class Game extends Canvas implements Runnable {
 	public static STATE State = STATE.MENU; //do this using a class getters and setters enum class
 	//Types of images used in game
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	private static BufferedImage spriteSheet = null;
+	private BufferedImage spriteSheet = null;
 	private BufferedImage background = null;
 	//Class properties
+	private Textures tex;
 	private Controller c;
 	private Player p;
-	private static ScoreSystem scoreSystem;
+	private ScoreSystem scoreSystem;
 	//Sound player and features
 	private AudioPlayer bgMusic;
 	private boolean loopContinously = true;
 	
 	/** Types of states */
-	public static enum STATE{
-		
+	public static enum STATE{ // do this using a class getters and setters
 		MENU,
 		GAME,
 		GAMEOVER
@@ -139,17 +140,17 @@ public class Game extends Canvas implements Runnable {
 			e.printStackTrace();
 		}
 		
-		Textures.init();
-		c = new Controller();
-		p = new Player(200, 200);
+		tex = new Textures(this);
+		c = new Controller(tex, this);
+		p = new Player(200, 200, tex, this, c);
 		
 		menu = new Menu();
 		scoreSystem = new ScoreSystem();
 		gameOver = new GameOver(scoreSystem);
 		
-		ea = Controller.getEntityA();
-		eb = Controller.getEntityB();
-		ec = Controller.getEntityC();
+		ea = c.getEntityA();
+		eb = c.getEntityB();
+		ec = c.getEntityC();
 		
 		this.addKeyListener(new KeyInput(this)); 
 		this.addMouseListener(new MouseInput());
@@ -225,7 +226,7 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	/** Game updates after certain keys are pressed */
-	public void keyPressed(KeyEvent e){
+	public void keyPressed(KeyEvent e){ //dont let k be capatalized
 		int key = e.getKeyCode();
 		
 		if (State == STATE.GAME){
@@ -239,7 +240,7 @@ public class Game extends Canvas implements Runnable {
 				p.setVelY(5);
 			}else if (key == KeyEvent.VK_SPACE &&!isShooting){
 				isShooting = true;
-				Controller.addEntity(new Bullet(p.getX(),p.getY()));
+				c.addEntity(new Bullet(p.getX(),p.getY(),tex));
 			}
 		}
 	}
@@ -260,6 +261,7 @@ public class Game extends Canvas implements Runnable {
 		}
 	}
 	
+
 	/** The audio begins playing or stops depending on the previous state of the audio player */
 	private void setAudioButton(){
 		if (!AudioPlayer.getAudioState())
@@ -269,12 +271,20 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	/** Returns the sprite sheet*/
-	public static BufferedImage getSpriteSheet(){
+	public BufferedImage getSpriteSheet(){
 		return spriteSheet;
+	}
+	/** Returns the number of enemies alive*/
+	public int getEnemy_count() {
+		return enemy_count;
+	}
+	/** Sets the number of the enemies alive */
+	public void setEnemy_count(int enemy_count) {
+		this.enemy_count = enemy_count;
 	}
 
 	/** Returns the score system */
-	public static ScoreSystem getScoreSystem(){
+	public ScoreSystem getScoreSystem(){
 		return scoreSystem;
 	}
 

@@ -9,6 +9,7 @@ public class Upgrades implements EntityC {
 	private double x;
 	private double y;
 	BufferedImage upgradeImage;
+	Controller c;
 	//Class types
 	public static int powerUp = 1;
 	public static int healthUp = 2;
@@ -21,14 +22,15 @@ public class Upgrades implements EntityC {
 	 * @param tex The textures used in the game
 	 * @param c The controller used in the game
 	 */
-	public Upgrades(int type, double x, double y){ 
+	public Upgrades(int type, double x, double y , Textures tex, Controller c){ 
 		this.x = x;
 		this.y = y;
+		this.c = c;
 		
 		if (type == powerUp){
-			upgradeImage = Textures.getPowerUpImage();
+			upgradeImage = tex.powerUp;
 		}else if (type == healthUp){
-			upgradeImage = Textures.getHealthUpImage();
+			upgradeImage = tex.healthUp;
 		}
 	}
 	

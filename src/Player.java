@@ -10,7 +10,11 @@ public class Player extends GameObject implements EntityA {
 	//Class properties
 	private double velX=0;
 	private double velY=0;
+	private Textures tex;
 	private int health = 100 * 2;
+	private Game game;
+	private Controller c;
+	
 	Animation anim;
 	
 	/** 
@@ -21,10 +25,13 @@ public class Player extends GameObject implements EntityA {
 	 * @param game The game itself
 	 * @param c The controller used
 	 */
-	public Player(double x, double y){
+	public Player(double x, double y, Textures tex, Game game, Controller c){
 		super(x,y);
+		this.game = game;
+		this.tex = tex;
+		this.c = c;
 		
-		anim = new Animation(100,Textures.getPlayerImage(0),Textures.getPlayerImage(1), Textures.getPlayerImage(2));
+		anim = new Animation(100,tex.player[0],tex.player[1],tex.player[2]);
 	}
 	
 	/** Update that occurs to the player */
@@ -41,12 +48,12 @@ public class Player extends GameObject implements EntityA {
 		if (y >= (480 - 32))
 			y = 480 - 32;
 		
-		for (int i = 0 ; i < Game.eb.size() ; i++){
-			EntityB tempEnt = Game.eb.get(i);
+		for (int i = 0 ; i < game.eb.size() ; i++){
+			EntityB tempEnt = game.eb.get(i);
 			
 			// the following body occurs when EntityA collides with EntityB
 			if(Physics.Collision(this, tempEnt)){
-				Controller.removeEntity(tempEnt);
+				c.removeEntity(tempEnt);
 				this.health -= 10;
 				Enemy.setEnemyKilled(Enemy.getEnemyKilled()+1);
 				if (this.health == 0){
@@ -54,20 +61,20 @@ public class Player extends GameObject implements EntityA {
 				}
 			}
 		}
-		for (int i = 0 ; i < Game.ec.size() ; i++){
-			EntityC tempEnt = Game.ec.get(i);
+		for (int i = 0 ; i < game.ec.size() ; i++){
+			EntityC tempEnt = game.ec.get(i);
 			
 			//removes the upgrade from the program as it leaves the screen	
 			if (tempEnt.getY()> Game.HEIGHT * Game.SCALE){
-				Controller.removeEntity(tempEnt);
+				c.removeEntity(tempEnt);
 			}
 			// the following body occurs when entity a collides with entity c
 			if(Physics.Collision(this, tempEnt)){
-				Controller.removeEntity(tempEnt);
+				c.removeEntity(tempEnt);
 				Upgrades u = (Upgrades) tempEnt;
-				if (u.getUpgradeType()==Textures.getHealthUpImage()){
+				if (u.getUpgradeType()==tex.healthUp){
 					healthUp();
-				} else if (u.getUpgradeType() == Textures.getPowerUpImage()){
+				} else if (u.getUpgradeType() == tex.powerUp){
 					powerUp();
 				}
 			}

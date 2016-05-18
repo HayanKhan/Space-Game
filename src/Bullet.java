@@ -9,6 +9,7 @@ public class Bullet extends GameObject implements EntityA{
 	//Bullet properties
 	public static int bulletSpeed = 10;
 	//Game properties
+	private Textures tex;
 	Animation anim;
 	//Bullet sound properties
 	private AudioPlayer bulletSound;
@@ -19,9 +20,10 @@ public class Bullet extends GameObject implements EntityA{
 	 * @param y Vertical position of bullet on canvas
 	 * @param tex Textures required to produce the bullet
 	 */
-	public Bullet(double x, double y){
+	public Bullet(double x, double y, Textures tex){
 		super(x,y);
-		anim = new Animation(100, Textures.getMissleImage(0), Textures.getMissleImage(1), Textures.getMissleImage(2)); 
+		this.tex = tex;
+		anim = new Animation(100,tex.missle[0],tex.missle[1],tex.missle[2]);
 		bulletSound = new AudioPlayer("/SFX/bullet-sound.mp3");
 		bulletSound.play(loopContinously);
 	}
@@ -32,7 +34,7 @@ public class Bullet extends GameObject implements EntityA{
 	}
 	/** Renders the bullet */
 	public void render(Graphics g){
-		g.drawImage(Textures.getMissleImage(0), (int)x,(int)y,null);
+		g.drawImage(tex.missle[0], (int)x,(int)y,null);
 		anim.drawAnimation(g, x, y, 0);
 	}
 	/** Returns the collision boundaries of the bullet */
