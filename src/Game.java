@@ -5,20 +5,13 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.LinkedList;
 import javax.swing.JFrame;
-
-import com.game.source.src.main.classes.EntityA;
-import com.game.source.src.main.classes.EntityB;
-import com.game.source.src.main.classes.EntityC;
-
 import Audio.AudioPlayer;
 
 public class Game extends Canvas implements Runnable {
 	
 	private static final long serialVersionUID = 1L;
-	//Application window dimensions
+	//Constant application window dimensions
 	public static final int WIDTH = 320;
 	public static final int HEIGHT = WIDTH / 12*9;
 	public static final int SCALE = 2;
@@ -28,10 +21,6 @@ public class Game extends Canvas implements Runnable {
 	private boolean isShooting = false;
 	private boolean running = false;
 	private Thread thread;	
-	//Ally, enemy, and neutral entities
-	public static LinkedList<EntityA> ea;
-	public static LinkedList<EntityB> eb;
-	public static LinkedList<EntityC> ec;
 	//Enemy statistics
 	private int enemy_count = 5;
 	//Game states
@@ -41,8 +30,6 @@ public class Game extends Canvas implements Runnable {
 	public static STATE State = STATE.MENU; //do this using a class getters and setters enum class
 	//Types of images used in game
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	private static BufferedImage spriteSheet = null;
-	private BufferedImage background = null;
 	//Class properties
 	private Controller c;
 	private Player p;
@@ -87,7 +74,7 @@ public class Game extends Canvas implements Runnable {
 		
 		running = true;
 		thread = new Thread(this);
-		thread.start(); //this start is in the thread class not the game class, so what this thread does it calls the run method in "this" class this which refers to the Game class
+		thread.start(); 
 	}
 	
 	/** Implementation of main game loop **/
@@ -129,16 +116,6 @@ public class Game extends Canvas implements Runnable {
 	 * Enables score system, sound system and mouse/key events 
 	 */
 	public void init(){
-		requestFocus();
-		BufferedImageLoader loader = new BufferedImageLoader();
-		
-		try{
-			spriteSheet = loader.loadImage("/spriteSheet.png");
-			background = loader.loadImage("/background.png");
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		
 		Textures.init();
 		c = new Controller();
 		p = new Player(200, 200);
@@ -146,10 +123,6 @@ public class Game extends Canvas implements Runnable {
 		menu = new Menu();
 		scoreSystem = new ScoreSystem();
 		gameOver = new GameOver(scoreSystem);
-		
-		ea = Controller.getEntityA();
-		eb = Controller.getEntityB();
-		ec = Controller.getEntityC();
 		
 		this.addKeyListener(new KeyInput(this)); 
 		this.addMouseListener(new MouseInput());
@@ -184,42 +157,27 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 	}
-	/** Renders the whole game */
+	/** Renders the menu, play screen, game over screen, monsters, player, the score system and etc. */
 	private void render(){
 		BufferStrategy bs = this.getBufferStrategy();
 		if (bs == null){
 			createBufferStrategy(3); //3 buffers
 			return;
 		}
-		
 		Graphics g = bs.getDrawGraphics();
-		////////////////////Draws stuff onto canvas between these two series of lines
-	
-		g.drawImage(image, 0, 0, getWidth(),getHeight(),this); //background
 		
-		//Checks what the current state is, and renders that
+		////////////////////Draws stuff onto canvas between these two series of lines
+		g.drawImage(image, 0, 0, getWidth(),getHeight(),this); //background
+		//Checks what the current state is, and renders that state
 		if (State == STATE.GAME){
-			g.drawImage(background,0,0,null);
-			p.render(g);
-			c.render(g);
-			scoreSystem.render(g);
-			g.setColor(Color.GRAY);
-			g.fillRect(5,5,200,50);
-			
-			g.setColor(Color.RED);
-			g.fillRect(5,5,p.getHealth(),50);
-			
-			g.setColor(Color.WHITE);
-			g.drawRect(5,5,200,50);
-			
+			renderGameObjects(g);
 		} else if (State == STATE.MENU){
-			menu.render(g);
-			setAudioButton();
-			
+			renderMenuObjects(g);
 		} else if (State == STATE.GAMEOVER){
-			gameOver.render(g);
+			renderGameOverObjects(g);
 		}
 		///////////////////
+		
 		g.dispose();
 		bs.show();	
 	}
@@ -243,7 +201,10 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 	}
-	/** Game updates after certain keys are released */
+	/**
+	 * Game updates after certain keys are released
+	 * @param e Key pressed by the user.
+	 */
 	public void keyReleased(KeyEvent e){
 		int key = e.getKeyCode();
 		
@@ -259,18 +220,49 @@ public class Game extends Canvas implements Runnable {
 			isShooting = false;
 		}
 	}
-	
+	/**
+	 * This renders all the objects in the menu state.
+	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
+	 */
+	private void renderMenuObjects(Graphics g){
+		menu.render(g);
+		setAudioButton();
+	}
+	/**
+	 * This renders all the objects in the game play state.
+	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
+	 */
+	private void renderGameObjects(Graphics g){
+		g.drawImage(Textures.getBackground(),0,0,null);
+		
+		p.render(g);
+		c.render(g);
+		
+		scoreSystem.render(g);
+		
+		g.setColor(Color.GRAY);
+		g.fillRect(5,5,200,50);
+		
+		g.setColor(Color.RED);
+		g.fillRect(5,5,p.getHealth(),50);
+		
+		g.setColor(Color.WHITE);
+		g.drawRect(5,5,200,50);
+	}
+	/**
+	 * This renders all the objects in the game over state.
+	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
+	 */
+	private void renderGameOverObjects(Graphics g){
+		gameOver.render(g);
+	}
+
 	/** The audio begins playing or stops depending on the previous state of the audio player */
 	private void setAudioButton(){
 		if (!AudioPlayer.getAudioState())
 			bgMusic.stop();
 		else if (AudioPlayer.getAudioState())
 			bgMusic.play(loopContinously);
-	}
-	
-	/** Returns the sprite sheet*/
-	public static BufferedImage getSpriteSheet(){
-		return spriteSheet;
 	}
 
 	/** Returns the score system */

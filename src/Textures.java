@@ -1,22 +1,33 @@
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class Textures {
 	//Class image properties
 	private static SpriteSheet ss;
+	private static BufferedImage spriteSheetImage = null;
+    private static BufferedImage background = null;
 	private static BufferedImage[] playerImageArray = new BufferedImage[3];
 	private static BufferedImage[] bulletImageArray = new BufferedImage[3];
-	private static BufferedImage[] enemyImageArray = new BufferedImage[3]; //NOTICE PUBLIC,BAD CODING STYLE, CAN MAKE IT STATIC AND CHANGE THE PROGRAM OR USE GETTERS/SETTERS
+	private static BufferedImage[] enemyImageArray = new BufferedImage[3];
 	private static BufferedImage powerUpImage;
 	private static BufferedImage healthUpImage;
 	public static BufferedImage volumeButtonOn;
 	public static BufferedImage volumeButtonOff;
-	public static int SPRITE_WIDTH = 32;
-	public static int SPRITE_HEIGHT = 32;
+	public static final int SPRITE_WIDTH = 32;
+	public static final int SPRITE_HEIGHT = 32;
 	
 
 	/** Loads in the images for the player, enemies and bullets */
 	public static void init(){
-		ss = new SpriteSheet(Game.getSpriteSheet());
+		BufferedImageLoader loader = new BufferedImageLoader();
+		try{
+			spriteSheetImage = loader.loadImage("/spriteSheet.png");
+			background = loader.loadImage("/background.png");
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		ss = new SpriteSheet(spriteSheetImage);
 		playerImageArray[0] = ss.grabImage(1, 1, SPRITE_WIDTH, SPRITE_HEIGHT);
 		playerImageArray[1] = ss.grabImage(1, 2, SPRITE_WIDTH, SPRITE_HEIGHT);
 		playerImageArray[2] = ss.grabImage(1, 3, SPRITE_WIDTH, SPRITE_HEIGHT);
@@ -67,6 +78,10 @@ public class Textures {
 	/** @return The health up image*/
 	public static BufferedImage getHealthUpImage(){
 		return healthUpImage;
+	}
+	/** @return The background used in the game	 */
+	public static BufferedImage getBackground(){
+		return background;
 	}
 	
 }

@@ -1,12 +1,11 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import com.game.source.src.main.classes.EntityA;
-import com.game.source.src.main.classes.EntityB;
-import com.game.source.src.main.classes.EntityC;
+import com.game.source.src.main.classes.AllyEntity;
+import com.game.source.src.main.classes.EnemyEntity;
+import com.game.source.src.main.classes.UpgradeEntity;
 
-public class Player extends GameObject implements EntityA {
-	
+public class Player extends GameObject implements AllyEntity {
 	//Class properties
 	private double velX=0;
 	private double velY=0;
@@ -23,7 +22,6 @@ public class Player extends GameObject implements EntityA {
 	 */
 	public Player(double x, double y){
 		super(x,y);
-		
 		anim = new Animation(100,Textures.getPlayerImage(0),Textures.getPlayerImage(1), Textures.getPlayerImage(2));
 	}
 	
@@ -41,9 +39,9 @@ public class Player extends GameObject implements EntityA {
 		if (y >= (480 - 32))
 			y = 480 - 32;
 		
-		for (int i = 0 ; i < Game.eb.size() ; i++){
-			EntityB tempEnt = Game.eb.get(i);
-			
+		//for (int i = 0 ; i < Game.eb.size() ; i++){---------------------------------------------------remove
+		for (int i = 0 ; i < Controller.getEntityB().size() ; i++){	
+			EnemyEntity tempEnt = Controller.getEntityB().get(i);
 			// the following body occurs when EntityA collides with EntityB
 			if(Physics.Collision(this, tempEnt)){
 				Controller.removeEntity(tempEnt);
@@ -54,8 +52,8 @@ public class Player extends GameObject implements EntityA {
 				}
 			}
 		}
-		for (int i = 0 ; i < Game.ec.size() ; i++){
-			EntityC tempEnt = Game.ec.get(i);
+		for (int i = 0 ; i < Controller.getEntityC().size() ; i++){
+			UpgradeEntity tempEnt = Controller.getEntityC().get(i);
 			
 			//removes the upgrade from the program as it leaves the screen	
 			if (tempEnt.getY()> Game.HEIGHT * Game.SCALE){

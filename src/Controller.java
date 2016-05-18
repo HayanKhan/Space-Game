@@ -2,18 +2,18 @@ import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.Random;
 
-import com.game.source.src.main.classes.EntityA;
-import com.game.source.src.main.classes.EntityB;
-import com.game.source.src.main.classes.EntityC;
+import com.game.source.src.main.classes.AllyEntity;
+import com.game.source.src.main.classes.EnemyEntity;
+import com.game.source.src.main.classes.UpgradeEntity;
 
 public class Controller {
 	//Linked lists made to group different type of entities in seperate linked lists.
-	private static LinkedList<EntityA> ea = new LinkedList<EntityA>();
-	private static LinkedList<EntityB> eb = new LinkedList<EntityB>();
-	private static LinkedList<EntityC> ec = new LinkedList<EntityC>();
-	private EntityA enta;
-	private EntityB entb;
-	private EntityC entc;
+	private static LinkedList<AllyEntity> ea = new LinkedList<AllyEntity>();
+	private static LinkedList<EnemyEntity> eb = new LinkedList<EnemyEntity>();
+	private static LinkedList<UpgradeEntity> ec = new LinkedList<UpgradeEntity>();
+	private AllyEntity enta;
+	private EnemyEntity entb;
+	private UpgradeEntity entc;
 	//Required classes/variables
 	Random r = new Random();
 	private static int type;
@@ -81,39 +81,39 @@ public class Controller {
 		}
 	}
 	/** Adds an object of class EntityA to an EntityA linked list */
-	public static void addEntity(EntityA block){
+	public static void addEntity(AllyEntity block){
 		ea.add(block);
 	}
 	/** Removes an object of class EntityA from an EntityA linked list */
-	public static void removeEntity(EntityA block){
+	public static void removeEntity(AllyEntity block){
 		ea.remove(block);
 	}
 	/** Adds an object of class EntityB to an EntityB linked list */
-	public static void addEntity(EntityB block){
+	public static void addEntity(EnemyEntity block){
 		eb.add(block);
 	}
 	/** Removes an object of class EntityB from an EntityB linked list */
-	public static void removeEntity(EntityB block){
+	public static void removeEntity(EnemyEntity block){
 		eb.remove(block);
 	}
 	/** Adds an object of class EntityC to an EntityC linked list */
-	public static void addEntity(EntityC block){
+	public static void addEntity(UpgradeEntity block){
 		ec.add(block);
 	}
 	/** Removes an object of class EntityC from an EntityC linked list */
-	public static void removeEntity(EntityC block){
+	public static void removeEntity(UpgradeEntity block){
 		ec.remove(block);
 	}
 	/** Returns an EntityA linked list */
-	public static LinkedList<EntityA> getEntityA(){
+	public static LinkedList<AllyEntity> getEntityA(){
 		return ea;
 	}
 	/** Returns an EntityB linked list */
-	public static LinkedList<EntityB> getEntityB(){
+	public static LinkedList<EnemyEntity> getEntityB(){
 		return eb;
 	}
 	/** Returns an EntityC linked list */
-	public static LinkedList<EntityC> getEntityC(){
+	public static LinkedList<UpgradeEntity> getEntityC(){
 		return ec;
 	}
 }

@@ -3,7 +3,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 /** Entity type that represents the player and the bullets */
-public interface EntityA {
+public interface AllyEntity {
 	public void tick();
 	public void render(Graphics g);
 	public Rectangle getBounds();

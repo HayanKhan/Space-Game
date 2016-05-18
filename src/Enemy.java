@@ -2,15 +2,14 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.Random;
 
-import com.game.source.src.main.classes.EntityA;
-import com.game.source.src.main.classes.EntityB;
+import com.game.source.src.main.classes.AllyEntity;
+import com.game.source.src.main.classes.EnemyEntity;
 
-public class Enemy extends GameObject implements EntityB {
+public class Enemy extends GameObject implements EnemyEntity {
 	
 	//Class features
 	Random r = new Random();
 	Animation anim;
-	
 	
 	//Enemy plane speed
 	private double speed = r.nextDouble() * 3 + 1; 
@@ -37,8 +36,8 @@ public class Enemy extends GameObject implements EntityB {
 			this.setX(r.nextInt((Game.WIDTH* Game.SCALE))); //make a variablee somewhere to replace the 32 constant
 			speed = r.nextDouble() * 3 + 1; 
 		}
-		for (int i = 0 ; i < Game.ea.size(); i++){
-			EntityA tempEnt = Game.ea.get(i);
+		for (int i = 0 ; i < Controller.getEntityA().size(); i++){
+			AllyEntity tempEnt = Controller.getEntityA().get(i);
 			
 			if (Physics.Collision(this, tempEnt)){
 				Controller.removeEntity(tempEnt);

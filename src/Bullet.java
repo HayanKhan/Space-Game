@@ -1,11 +1,11 @@
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import com.game.source.src.main.classes.EntityA;
+import com.game.source.src.main.classes.AllyEntity;
 
 import Audio.AudioPlayer;
 
 
-public class Bullet extends GameObject implements EntityA{
+public class Bullet extends GameObject implements AllyEntity{
 	//Bullet properties
 	public static int bulletSpeed = 10;
 	//Game properties

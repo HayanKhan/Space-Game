@@ -2,9 +2,9 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import com.game.source.src.main.classes.EntityC;
+import com.game.source.src.main.classes.UpgradeEntity;
 
-public class Upgrades implements EntityC {
+public class Upgrades implements UpgradeEntity {
 	//Class properties
 	private double x;
 	private double y;
