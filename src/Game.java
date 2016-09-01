@@ -1,8 +1,7 @@
 import java.awt.Canvas;
-import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
@@ -11,36 +10,33 @@ import Audio.AudioPlayer;
 public class Game extends Canvas implements Runnable {
 	
 	private static final long serialVersionUID = 1L;
-	//Constant application window dimensions
-	public static final int WIDTH = 320;
-	public static final int HEIGHT = WIDTH / 12*9;
+	//Frame dimensions
+	public static final int WIDTH = 600;
+	public static final int HEIGHT = WIDTH / 12 * 9;
 	public static final int SCALE = 2;
-	//Game title
+	public static final int GAME_SIDE_PANEL_WIDTH = 305;
+
 	public final String TITLE = "2D Space Game";
-	//Player properties
-	private boolean isShooting = false;
-	private boolean running = false;
-	private Thread thread;	
-	//Enemy statistics
+	
 	private int enemy_count = 5;
-	//Game states
+	
 	private Menu menu;
 	private GameOver gameOver;
-	//Shows the current state of the game
-	public static STATE State = STATE.MENU; //do this using a class getters and setters enum class
-	//Types of images used in game
+	
+	public static STATE State = STATE.MENU; 
+	//background image
 	private BufferedImage image = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-	//Class properties
-	private Controller c;
-	private Player p;
-	private static ScoreSystem scoreSystem;
-	//Sound player and features
+
+	private Thread thread;	
+	private boolean running = false;
+	private Controller controller;
+	private Player player;
+	private ScoreSystem scoreSystem;
+
 	private AudioPlayer bgMusic;
-	private boolean loopContinously = true;
 	
 	/** Types of states */
 	public static enum STATE{
-		
 		MENU,
 		GAME,
 		GAMEOVER
@@ -117,16 +113,17 @@ public class Game extends Canvas implements Runnable {
 	 */
 	public void init(){
 		Textures.init();
-		c = new Controller();
-		p = new Player(200, 200);
+		controller = new Controller();
+		player = new Player(200, 200);
 		
 		menu = new Menu();
-		scoreSystem = new ScoreSystem();
-		gameOver = new GameOver(scoreSystem);
+		gameOver = new GameOver();
 		
-		this.addKeyListener(new KeyInput(this)); 
+		scoreSystem = new ScoreSystem();
+		
+		this.addKeyListener(player); 
 		this.addMouseListener(new MouseInput());
-		c.createEnemy(enemy_count);
+		controller.createEnemy(enemy_count);
 	
 		bgMusic = new AudioPlayer("/Music/Once-Around-the-Solar-System.mp3");
 	}
@@ -148,15 +145,18 @@ public class Game extends Canvas implements Runnable {
 	/** Updates the whole game */
 	private void tick(){
 		if (State == STATE.GAME){
-			p.tick();
-			c.tick();
+			player.tick();
+			controller.tick();
+			
 			if (Enemy.getEnemyKilled() >= enemy_count){
+				ScoreSystem.setWaveNum(ScoreSystem.getWaveNum() + 1);
 				enemy_count +=2;
 				Enemy.setEnemyKilled(0);
-				c.createEnemy(enemy_count);
+				controller.createEnemy(enemy_count);
 			}
 		}
 	}
+	
 	/** Renders the menu, play screen, game over screen, monsters, player, the score system and etc. */
 	private void render(){
 		BufferStrategy bs = this.getBufferStrategy();
@@ -182,44 +182,6 @@ public class Game extends Canvas implements Runnable {
 		bs.show();	
 	}
 	
-	/** Game updates after certain keys are pressed */
-	public void keyPressed(KeyEvent e){
-		int key = e.getKeyCode();
-		
-		if (State == STATE.GAME){
-			if (key == KeyEvent.VK_RIGHT){
-				p.setVelX(5);
-			}else if(key == KeyEvent.VK_LEFT){
-				p.setVelX(-5);
-			}else if(key == KeyEvent.VK_UP){
-				p.setVelY(-5);
-			}else if(key == KeyEvent.VK_DOWN){
-				p.setVelY(5);
-			}else if (key == KeyEvent.VK_SPACE &&!isShooting){
-				isShooting = true;
-				Controller.addEntity(new Bullet(p.getX(),p.getY()));
-			}
-		}
-	}
-	/**
-	 * Game updates after certain keys are released
-	 * @param e Key pressed by the user.
-	 */
-	public void keyReleased(KeyEvent e){
-		int key = e.getKeyCode();
-		
-		if (key == KeyEvent.VK_RIGHT){
-			p.setVelX(0);
-		}else if(key == KeyEvent.VK_LEFT){
-			p.setVelX(0);
-		}else if(key == KeyEvent.VK_UP){
-			p.setVelY(0);
-		}else if(key == KeyEvent.VK_DOWN){
-			p.setVelY(0);
-		}else if (key == KeyEvent.VK_SPACE){
-			isShooting = false;
-		}
-	}
 	/**
 	 * This renders all the objects in the menu state.
 	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
@@ -228,6 +190,7 @@ public class Game extends Canvas implements Runnable {
 		menu.render(g);
 		setAudioButton();
 	}
+	
 	/**
 	 * This renders all the objects in the game play state.
 	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
@@ -235,20 +198,11 @@ public class Game extends Canvas implements Runnable {
 	private void renderGameObjects(Graphics g){
 		g.drawImage(Textures.getBackground(),0,0,null);
 		
-		p.render(g);
-		c.render(g);
-		
-		scoreSystem.render(g);
-		
-		g.setColor(Color.GRAY);
-		g.fillRect(5,5,200,50);
-		
-		g.setColor(Color.RED);
-		g.fillRect(5,5,p.getHealth(),50);
-		
-		g.setColor(Color.WHITE);
-		g.drawRect(5,5,200,50);
+		player.render(g);
+		controller.render(g);
+		scoreSystem.render(g); 
 	}
+	
 	/**
 	 * This renders all the objects in the game over state.
 	 * @param g The graphics program, that includes graphics applications such as drawing, coloring etc.
@@ -259,16 +213,12 @@ public class Game extends Canvas implements Runnable {
 
 	/** The audio begins playing or stops depending on the previous state of the audio player */
 	private void setAudioButton(){
+		boolean loopContinously = true;
+		
 		if (!AudioPlayer.getAudioState())
 			bgMusic.stop();
 		else if (AudioPlayer.getAudioState())
 			bgMusic.play(loopContinously);
 	}
-
-	/** Returns the score system */
-	public static ScoreSystem getScoreSystem(){
-		return scoreSystem;
-	}
-
 }
 

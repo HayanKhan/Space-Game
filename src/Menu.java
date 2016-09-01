@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -9,53 +10,53 @@ import Audio.AudioPlayer;
 
 public class Menu {
 	
-	//Class properties
-	public Rectangle playButton = new Rectangle(Game.WIDTH/2 + 120,150,100,50);
-	public Rectangle helpButton = new Rectangle(Game.WIDTH/2 + 120,250,100,50);
-	public Rectangle quitButton = new Rectangle(Game.WIDTH/2 + 120,350,100,50);
+	private static int rectangleWidth = 100;
+	private static int rectangleHeight = 50;
+	public static Rectangle playButton = new Rectangle(Game.WIDTH * Game.SCALE / 2 - rectangleWidth / 2, 250,rectangleWidth, rectangleHeight);
+	public static Rectangle quitButton = new Rectangle(Game.WIDTH * Game.SCALE / 2 - rectangleWidth / 2, 350,rectangleWidth, rectangleHeight);
 	
 	private static BufferedImage volumeButtonOn = Textures.volumeButtonOn;
 	private static BufferedImage volumeButtonOff = Textures.volumeButtonOff;
 	private static int volumeXPos = (Game.WIDTH * Game.SCALE) - volumeButtonOn.getWidth();
-	private static int volumeYPos = Game.HEIGHT * Game.SCALE -32;
+	private static int volumeYPos = Game.HEIGHT * Game.SCALE - volumeButtonOn.getHeight();
+	public static Rectangle volumeButton = new Rectangle(volumeXPos, volumeYPos, volumeButtonOn.getWidth(), volumeButtonOff.getHeight());
 	
 	/** Renders the menu state and the audio button */
 	public void render(Graphics g){
 		
 		Graphics2D g2d = (Graphics2D) g;	
 		
-		Font fnt0 = new Font("arial",Font.BOLD,50);
-		g.setFont(fnt0);
-		g.setColor(Color.WHITE);
-		g.drawString("SPACE GAME", Game.WIDTH /2,50);
+		createTextLabel(g, "SPACE GAME", 50, Color.WHITE, Game.WIDTH * Game.SCALE / 2, 50);
+		createTextLabel(g, "Made By: Hayan Khan", 15, Color.WHITE, Game.WIDTH * Game.SCALE / 2, 75);
+		createTextLabel(g, "PLAY", 30, Color.WHITE, Game.WIDTH * Game.SCALE / 2, playButton.y + 35);
+		createTextLabel(g, "QUIT", 30, Color.WHITE, Game.WIDTH * Game.SCALE / 2, quitButton.y + 35);
 		
-		Font fnt1 = new Font("Arial",Font.BOLD,15);
-		g.setFont(fnt1);
-		g.drawString("Made By: Hayan Khan", Game.WIDTH - 65, 75);
-	
-		Font fnt2 = new Font("arial",Font.BOLD,30);
-		g.setFont(fnt2);
-		g.drawString("PLAY",playButton.x + 10,playButton.y + 35);
 		g2d.draw(playButton);
-		g.drawString("HELP",helpButton.x + 10,helpButton.y + 35);
-		g2d.draw(helpButton);
-		g.drawString("QUIT",quitButton.x + 10,quitButton.y + 35);
 		g2d.draw(quitButton);
 		
-		if (AudioPlayer.getAudioState()){
+		if (AudioPlayer.getAudioState())
 			g.drawImage(volumeButtonOn, volumeXPos, volumeYPos, null);
-		} else if (!AudioPlayer.getAudioState()){
-			g.drawImage(volumeButtonOff, volumeXPos, volumeYPos, null);
-			
-		}
+		else if (!AudioPlayer.getAudioState())
+			g.drawImage(volumeButtonOff, volumeXPos, volumeYPos, null);	
+	}
+	
+	/**
+	 * Creates a text label, at its center position.
+	 * @param g Referenced to the canvas the graphics are drawn on.
+	 * @param text Text displayed to graphics canvas
+	 * @param fontSize Size of the font
+	 * @param color Color of the label
+	 * @param x The center of the label
+	 * @param y The top position of the label
+	 */
+	public void createTextLabel(Graphics g, String text, int fontSize, Color color, int x, int y ){
+	
+		Font font = new Font("Arial", Font.BOLD, fontSize);
+		FontMetrics fontMetrics = g.getFontMetrics(font);
+		int textWidth = fontMetrics.stringWidth(text);
 		
-	}
-	/** @return The volume button's horizontal position */
-	public static int getVolumeXPos(){
-		return volumeXPos;
-	}
-	/** @return The volume button's vertical position */
-	public static int getVolumeYPos(){
-		return volumeYPos;
+		g.setFont(font);
+		g.setColor(color);
+		g.drawString(text, x - textWidth / 2, y);
 	}
 }

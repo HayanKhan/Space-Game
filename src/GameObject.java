@@ -3,6 +3,7 @@ import java.awt.Rectangle;
 public class GameObject {
 	
 	public double x, y;
+	
 	/**
 	 * Main constructor of every GameObject object
 	 * @param x Horizontal position of object

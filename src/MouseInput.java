@@ -1,3 +1,4 @@
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -22,10 +23,14 @@ public class MouseInput implements MouseListener{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		int mx = e.getX();
+		int my = e.getY();
+		Rectangle cursorRectangle = new Rectangle(mx, my , 1, 1);
+		
 		if (Game.State == Game.STATE.MENU){
-			mouseEventsForMenu(e);
+			mouseEventsForMenu(cursorRectangle);
 		}else if (Game.State == Game.STATE.GAMEOVER){
-			mouseEventsForGameOver(e);
+			mouseEventsForGameOver(cursorRectangle);
 		}
 	}
 
@@ -34,34 +39,29 @@ public class MouseInput implements MouseListener{
 		// TODO Auto-generated method stub
 	}
 	
-	private void mouseEventsForMenu(MouseEvent e){
-		int mx = e.getX();
-		int my = e.getY();
+	private void mouseEventsForMenu(Rectangle cursorRectangle){
+		
 		//Play Button
-		if (mx >= Game.WIDTH / 2 +120 && mx <= Game.WIDTH /2 +220){
-			if (my>=150 && my<=200){
-				Game.State = Game.STATE.GAME;
-			}	
+		if (cursorRectangle.intersects(Menu.playButton)){
+			Game.State = Game.STATE.GAME;
 		}
+		
 		//Quit Button
-		if (mx >= Game.WIDTH / 2 +120 && mx <= Game.WIDTH /2 +220){
-			if (my>=350 && my<=400){
-				System.exit(1);
-			}	
+		if (cursorRectangle.intersects(Menu.quitButton)){
+			System.exit(1);
 		}
 		
 		//Volume Button
-		if (mx>= Menu.getVolumeXPos()){
-			if (my >=Menu.getVolumeYPos()){
-				AudioPlayer.changeAudioState();
-			}
+		if (cursorRectangle.intersects(Menu.volumeButton)){
+			AudioPlayer.changeAudioState();
 		}
 	}
 	
-	private void mouseEventsForGameOver(MouseEvent e){
-		int mx = e.getX();
-		int my = e.getY();
-		//fill here, must still implement
+	private void mouseEventsForGameOver(Rectangle cursorRectangle){
+		
+		//Quit Button
+		if (cursorRectangle.intersects(GameOver.exitButton)){
+			System.exit(1);
+		}
 	}
-
 }

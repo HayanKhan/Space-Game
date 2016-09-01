@@ -2,6 +2,7 @@ import java.awt.image.BufferedImage;
 
 public class SpriteSheet {
 	private BufferedImage ss;
+	
 	/**
 	 * SpriteSheet constructor
 	 * @param image Image of the spritesheet
@@ -9,6 +10,7 @@ public class SpriteSheet {
 	public SpriteSheet(BufferedImage ss){
 		this.ss= ss;
 	}
+	
 	/**
 	 * Returns the image at a (col,row) point on the spritesheet extending a specific width and a height 
 	 * @param col Horizontal cell 

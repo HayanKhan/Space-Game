@@ -1,37 +1,47 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+
 public class GameOver {
-	//Class properties
-	public Rectangle r = new Rectangle(Game.WIDTH/2 + 90 ,350,150,50);
-	private ScoreSystem scoreSystem;
 	
-	/** 
-	 * The constructor of the game over state.
-	 * @param scoreSystem The score system.
-	 */
-	public GameOver(ScoreSystem scoreSystem){
-		this.scoreSystem = scoreSystem;
-	}
+	private static int rectangleWidth = 150;
+	private static int rectangleHeight = 50;
+
+	public static final Rectangle exitButton = new Rectangle(Game.WIDTH * Game.SCALE / 2 - rectangleWidth / 2, 400, rectangleWidth, rectangleHeight);
+	
 	/**Renders the game over state */
 	public void render(Graphics g){
 		Graphics2D g2d = (Graphics2D) g;
 		
-		Font f0 = new Font("Arial",Font.BOLD,50);
-		g.setFont(f0);
-		g.setColor(Color.RED);
-		g.drawString("GAME OVER", Game.WIDTH/2, Game.HEIGHT/2);
-		g2d.draw(r);
-		
-		Font f1 = new Font("Arial",Font.BOLD,30);
-		g.setFont(f1);
-		g.setColor(Color.BLUE);
-		g.drawString("Try Again",r.x + 5, r.y + (int) r.getHeight() - 5);
-		g.setColor(Color.WHITE);
-		g.drawString("Score: " + scoreSystem.getScore() , r.x + 5, r.y - 80);
+		createButtonText(g, "Game Over", 80, Color.RED, Game.WIDTH *Game.SCALE/2, 100);
+		createButtonText(g, "Exit", 30, Color.BLUE, Game.WIDTH *Game.SCALE/2, exitButton.y + 35);
+		createButtonText(g, "Score: " + ScoreSystem.getScore(), 50, Color.WHITE, Game.WIDTH *Game.SCALE/2, 700 );
 	
+		g2d.draw(exitButton);
+	}
+	
+	/**
+	 * Creates the text for a button.
+	 * @param g The graphics canvas from the main game.
+	 * @param buttonText The text to be inserted into the button.
+	 * @param fontSize The size of the text font.
+	 * @param color The color of the text/
+	 * @param x The x position of the string inserted, relative to the canvas.
+	 * @param y The y position of the string inserted, relative to the canvas.
+	 */
+	public void createButtonText(Graphics g, String text, int fontSize, Color color, int x, int y){
+
+		Font font = new Font("Arial", Font.BOLD, fontSize);
+		FontMetrics fontMetrics = g.getFontMetrics(font);
+		int textWidth = fontMetrics.stringWidth(text);
+		
+		g.setFont(font);
+		g.setColor(color);
+		g.drawString(text, x - textWidth / 2, y);	
+
 	}
 }

@@ -10,5 +10,4 @@ public interface EnemyEntity {
 	
 	public double getX();
 	public double getY();
-	
 }

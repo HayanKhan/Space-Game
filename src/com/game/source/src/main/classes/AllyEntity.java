@@ -10,5 +10,4 @@ public interface AllyEntity {
 	
 	public double getX();
 	public double getY();
-	
 }
